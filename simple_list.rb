@@ -57,6 +57,14 @@ class TestSimpleList < Minitest::Test
         list.add("Sara")
         assert_equal ["Lucia", "Pedro", "Sara"], list.values
     end
+    def test_remove_element
+        list = List.new
+        list.add("Lucia")
+        list.add("Pedro")
+        list.add("Sara")
+        list.remove("Pedro")
+        assert_equal ["Lucia", "Sara"], list.values 
+    end
 end
 class Element
     attr_accessor :name, :next_element
@@ -82,6 +90,15 @@ class List
             element = element.next_element
         end
         return element != nil ? element.name : nil 
+    end
+    def remove(value)
+        element = @element
+        while element != nil and element.name != value do
+            last_element = element
+            element = element.next_element
+        end
+        last_element.next_element = element.next_element
+        return values
     end
     def values
         all_values = []
