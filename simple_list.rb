@@ -6,29 +6,34 @@ class TestSimpleList < Minitest::Test
         list.add("Lucia")
         assert_equal false, list.empty? 
     end
+
     def test_find_first_element
         list = List.new
         list.add("Lucia") 
         assert_equal "Lucia", list.find("Lucia")
     end
+
     def test_add_second_element
         list = List.new
         list.add("Lucia")
         list.add("Pedro")
         assert_equal 2, list.size
     end
+
     def test_find_second_element
         list = List.new
         list.add("Lucia")
         list.add("Pedro")
         assert_equal "Pedro", list.find("Pedro")
     end
+
     def test_find_element_that_not_exist
         list = List.new
         list.add("Lucia")
         list.add("Pedro")
         assert_equal nil, list.find("Sara")
     end
+
     def test_add_third_element
         list = List.new
         list.add("Lucia")
@@ -36,6 +41,7 @@ class TestSimpleList < Minitest::Test
         list.add("Sara")
         assert_equal 3, list.size
     end
+
     def test_find_third_element
         list = List.new
         list.add("Lucia")
@@ -43,6 +49,7 @@ class TestSimpleList < Minitest::Test
         list.add("Sara")
         assert_equal "Sara", list.find("Sara")
     end
+
     def test_find_second_element_in_list_with_size_three
         list = List.new
         list.add("Lucia")
@@ -50,6 +57,7 @@ class TestSimpleList < Minitest::Test
         list.add("Sara")
         assert_equal "Pedro", list.find("Pedro")
     end
+    
     def test_return_all_values
         list = List.new
         list.add("Lucia")
@@ -57,6 +65,7 @@ class TestSimpleList < Minitest::Test
         list.add("Sara")
         assert_equal ["Lucia", "Pedro", "Sara"], list.values
     end
+
     def test_remove_element
         list = List.new
         list.add("Lucia")
@@ -65,10 +74,28 @@ class TestSimpleList < Minitest::Test
         list.remove("Pedro")
         assert_equal ["Lucia", "Sara"], list.values 
     end
+
+    def test_remove_first_element
+        list = List.new
+        list.add("Pedro")
+        list.add("Sara")
+        list.remove("Pedro")
+        assert_equal ["Sara"], list.values 
+    end
+
+    def test_remove_last_element
+        list = List.new
+        list.add("Pedro")
+        list.add("Sara")
+        list.remove("Sara")
+        assert_equal ["Pedro"], list.values 
+    end
 end
+
 class Element
     attr_accessor :name, :next_element
 end
+
 class List
     def add(value) 
         if empty?
@@ -84,6 +111,7 @@ class List
             element.next_element = new_element
         end
     end
+
     def find(value)
         element = @element
         while element != nil and element.name != value do
@@ -91,15 +119,21 @@ class List
         end
         return element != nil ? element.name : nil 
     end
+
     def remove(value)
         element = @element
-        while element != nil and element.name != value do
-            last_element = element
-            element = element.next_element
+        if element.name == value and empty? == false
+            @element = element.next_element
+        else
+            while element != nil and element.name != value do
+                last_element = element
+                element = element.next_element
+            end
+            last_element.next_element = element.next_element
         end
-        last_element.next_element = element.next_element
         return values
     end
+
     def values
         all_values = []
         element = @element
@@ -109,6 +143,11 @@ class List
         end
         return all_values
     end
+
+    def empty?
+        @element == nil
+    end
+
     def size
         elements = 0
         element = @element
@@ -117,8 +156,5 @@ class List
             element = element.next_element
         end
         return elements
-    end
-    def empty?
-        @element == nil
     end
 end
