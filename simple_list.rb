@@ -107,7 +107,7 @@ class List
 
 public
     def add(value) 
-        if list_empty?
+        if list_empty? 
             @element = List.new
             @element.name = value
         else
