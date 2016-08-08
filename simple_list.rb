@@ -4,7 +4,7 @@ class TestSimpleList < Minitest::Test
     def test_add_element_to_list
         list = List.new
         list.add("Lucia")
-        assert_equal false, list.empty? 
+        assert_equal false, list.list_empty? 
     end
 
     def test_find_first_element
@@ -90,6 +90,15 @@ class TestSimpleList < Minitest::Test
         list.remove("Sara")
         assert_equal ["Pedro"], list.values 
     end
+
+    def test_remove_element_that_not_exist
+        list = List.new
+        list.add("Lucia")
+        list.add("Pedro")
+        list.add("Sara")
+        list.remove("Pablo")
+        assert_equal ["Lucia", "Pedro", "Sara"], list.values 
+    end
 end
 
 class Element
@@ -98,38 +107,35 @@ end
 
 class List
     def add(value) 
-        if empty?
+        if list_empty?
             @element = Element.new
             @element.name = value
         else
-            element = @element
-            while element.next_element != nil do
-                element = element.next_element
-            end
             new_element = Element.new
             new_element.name = value
-            element.next_element = new_element
+            last_element = find_last_element
+            last_element.next_element = new_element
         end
     end
 
     def find(value)
         element = @element
-        while element != nil and element.name != value do
+        while exist?(element) and element.name != value do
             element = element.next_element
         end
-        return element != nil ? element.name : nil 
+        return exist?(element) ? element.name : nil 
     end
 
     def remove(value)
-        element = @element
-        if element.name == value and empty? == false
-            @element = element.next_element
+        if is_first_element?(value) 
+            @element = @element.next_element
         else
-            while element != nil and element.name != value do
-                last_element = element
+            element = @element
+            while exist?(element) and element.name != value do
+                previous_element = element
                 element = element.next_element
             end
-            last_element.next_element = element.next_element
+            previous_element.next_element = element.next_element if exist?(element) 
         end
         return values
     end
@@ -137,24 +143,41 @@ class List
     def values
         all_values = []
         element = @element
-        while element != nil do
+        while exist?(element) do
             all_values << element.name
             element = element.next_element
         end
         return all_values
     end
 
-    def empty?
+    def list_empty?
         @element == nil
     end
 
     def size
         elements = 0
         element = @element
-        while element != nil do
+        while exist?(element) do
             elements += 1
             element = element.next_element
         end
         return elements
+    end
+
+private
+    def find_last_element
+        last_element = @element
+        while last_element.next_element != nil do
+            last_element = last_element.next_element
+        end
+        return last_element
+    end
+
+    def is_first_element?(value)
+        @element.name == value and list_empty? == false
+    end
+
+    def exist?(element)
+        element != nil
     end
 end
