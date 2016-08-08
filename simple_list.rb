@@ -101,17 +101,17 @@ class TestSimpleList < Minitest::Test
     end
 end
 
-class Element
-    attr_accessor :name, :next_element
-end
-
 class List
+
+    attr_accessor :name, :next_element
+
+public
     def add(value) 
         if list_empty?
-            @element = Element.new
+            @element = List.new
             @element.name = value
         else
-            new_element = Element.new
+            new_element = List.new
             new_element.name = value
             last_element = find_last_element
             last_element.next_element = new_element
