@@ -2,40 +2,40 @@ require "minitest/autorun"
 
 class TestSimpleList < Minitest::Test
     def test_add_element_to_list
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         assert_equal false, list.list_empty? 
     end
 
     def test_find_first_element
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia") 
-        assert_equal "Lucia", list.find("Lucia")
+        assert_equal "Lucia", list.fetch("Lucia")
     end
 
     def test_add_second_element
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         assert_equal 2, list.size
     end
 
     def test_find_second_element
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
-        assert_equal "Pedro", list.find("Pedro")
+        assert_equal "Pedro", list.fetch("Pedro")
     end
 
     def test_find_element_that_not_exist
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
-        assert_equal nil, list.find("Sara")
+        assert_equal nil, list.fetch("Sara")
     end
 
     def test_add_third_element
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         list.add("Sara")
@@ -43,23 +43,23 @@ class TestSimpleList < Minitest::Test
     end
 
     def test_find_third_element
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         list.add("Sara")
-        assert_equal "Sara", list.find("Sara")
+        assert_equal "Sara", list.fetch("Sara")
     end
 
     def test_find_second_element_in_list_with_size_three
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         list.add("Sara")
-        assert_equal "Pedro", list.find("Pedro")
+        assert_equal "Pedro", list.fetch("Pedro")
     end
     
     def test_return_all_values
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         list.add("Sara")
@@ -67,7 +67,7 @@ class TestSimpleList < Minitest::Test
     end
 
     def test_remove_element
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         list.add("Sara")
@@ -76,7 +76,7 @@ class TestSimpleList < Minitest::Test
     end
 
     def test_remove_first_element
-        list = List.new
+        list = SimpleList.new
         list.add("Pedro")
         list.add("Sara")
         list.remove("Pedro")
@@ -84,7 +84,7 @@ class TestSimpleList < Minitest::Test
     end
 
     def test_remove_last_element
-        list = List.new
+        list = SimpleList.new
         list.add("Pedro")
         list.add("Sara")
         list.remove("Sara")
@@ -92,7 +92,7 @@ class TestSimpleList < Minitest::Test
     end
 
     def test_remove_element_that_not_exist
-        list = List.new
+        list = SimpleList.new
         list.add("Lucia")
         list.add("Pedro")
         list.add("Sara")
@@ -101,29 +101,29 @@ class TestSimpleList < Minitest::Test
     end
 end
 
-class List
+class SimpleList
 
     attr_accessor :name, :next_element
 
 public
     def add(value) 
         if list_empty? 
-            @element = List.new
+            @element = SimpleList.new
             @element.name = value
         else
-            new_element = List.new
+            new_element = SimpleList.new
             new_element.name = value
             last_element = find_last_element
             last_element.next_element = new_element
         end
     end
 
-    def find(value)
+    def fetch(value)
         element = @element
-        while exist?(element) and element.name != value do
+        while element_not_nil?(element) and element.name != value do
             element = element.next_element
         end
-        return exist?(element) ? element.name : nil 
+        return element_not_nil?(element) ? element.name : nil 
     end
 
     def remove(value)
@@ -131,11 +131,11 @@ public
             @element = @element.next_element
         else
             element = @element
-            while exist?(element) and element.name != value do
+            while element_not_nil?(element) and element.name != value do
                 previous_element = element
                 element = element.next_element
             end
-            previous_element.next_element = element.next_element if exist?(element) 
+            previous_element.next_element = element.next_element if element_not_nil?(element) 
         end
         return values
     end
@@ -143,7 +143,7 @@ public
     def values
         all_values = []
         element = @element
-        while exist?(element) do
+        while element_not_nil?(element) do
             all_values << element.name
             element = element.next_element
         end
@@ -157,7 +157,7 @@ public
     def size
         elements = 0
         element = @element
-        while exist?(element) do
+        while element_not_nil?(element) do
             elements += 1
             element = element.next_element
         end
@@ -177,7 +177,7 @@ private
         @element.name == value and list_empty? == false
     end
 
-    def exist?(element)
+    def element_not_nil?(element)
         element != nil
     end
 end
